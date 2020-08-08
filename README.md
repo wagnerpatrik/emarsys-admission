@@ -4,7 +4,7 @@ Emarsys admission project built with NodeJS.
 
 ## Installing the app
 
-After downloading/cloning the repo, navigate to root and run ``npm install`
+After downloading/cloning the repo, navigate to root and run `npm install`
 
 ## Running the app
 
