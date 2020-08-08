@@ -1,0 +1,4 @@
+const SPACE_RE = /\s+/g;
+const DESTINATION_DEPENDENCY_SEPARATOR = '=>';
+
+module.exports = { SPACE_RE, DESTINATION_DEPENDENCY_SEPARATOR };

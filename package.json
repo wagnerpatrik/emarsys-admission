@@ -2,8 +2,9 @@
   "name": "emarsys-admission",
   "version": "1.0.0",
   "description": "Emarsys admission project",
-  "main": "app.js",
+  "main": "./holiday-planner/app.js",
   "scripts": {
+    "start": "node ./holiday-planner/app.js",
     "test": "./node_modules/.bin/mocha"
   },
   "repository": {
