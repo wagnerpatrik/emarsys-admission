@@ -1,0 +1,23 @@
+{
+  "name": "emarsys-admission",
+  "version": "1.0.0",
+  "description": "Emarsys admission project",
+  "main": "app.js",
+  "scripts": {
+    "test": "./node_modules/.bin/mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wagnerpatrik/emarsys-admission.git"
+  },
+  "author": "Patrik Wagner",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/wagnerpatrik/emarsys-admission/issues"
+  },
+  "homepage": "https://github.com/wagnerpatrik/emarsys-admission#readme",
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^8.1.1"
+  }
+}
