@@ -1,24 +1,12 @@
 const { DESTINATION_DEPENDENCY_SEPARATOR, SPACE_RE } = require('./constants.js');
 
-const sanitiser = (input) => {
-  const trimmedInput = input.replace(SPACE_RE, '');
+const validateInput = (input) => {
+  const trimmedInput = input.replace(SPACE_RE, '').replace(DESTINATION_DEPENDENCY_SEPARATOR, '');
 
-  if (trimmedInput.length > 4) {
-    throw Error(
-      `Invalid input. Please enter space separated letters, with or without a "fat arrow"`,
-    );
-  } else if (
-    (trimmedInput.length === 1 || trimmedInput.length === 2) &&
-    !input.match(new RegExp(DESTINATION_DEPENDENCY_SEPARATOR))
-  ) {
-    return `${trimmedInput[0]}${DESTINATION_DEPENDENCY_SEPARATOR}${
-      trimmedInput[1] ? trimmedInput[1] : ''
-    }`;
+  if (trimmedInput.length > 2) {
+    throw Error(`Invalid input. Please enter two letters, with or without a "fat arrow"`);
   }
-  return trimmedInput;
+  return `${trimmedInput[0]}${trimmedInput[1] ? trimmedInput[1] : ''}`;
 };
 
-module.exports = transformInput = (destination) =>
-  sanitiser(destination)
-    .split(DESTINATION_DEPENDENCY_SEPARATOR)
-    .map((part = '') => part.trim());
+module.exports = transformInput = (destination) => validateInput(destination).split('');
