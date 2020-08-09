@@ -102,5 +102,13 @@ describe('generateRoute()', () => {
 
       expect(result).be.equal(expectation).and.be.lengthOf(6);
     });
+
+    it('should return the optimised route by moving the destination dependency v4', () => {
+      const expectation = 'vxwzy';
+      const destionations = ['vw', 'wx', 'xv', 'yz', 'zv'];
+      const result = generateRoute(destionations);
+
+      expect(result).be.equal(expectation).and.be.lengthOf(5);
+    });
   });
 });

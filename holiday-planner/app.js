@@ -1,16 +1,17 @@
 const transformInput = require('../shared/helpers.js');
 
 const routeReducer = (optimalRoute, [destination, desDependency]) => {
-  const desDependencyIndex = optimalRoute.findIndex((des) => des === desDependency);
+  let desDependencyIndex = optimalRoute.findIndex((des) => des === desDependency);
   const destinationIndex = optimalRoute.findIndex((route) => route === destination);
 
   if (desDependency && desDependencyIndex === -1) {
     optimalRoute.push(desDependency);
+    desDependencyIndex = optimalRoute.findIndex((des) => des === desDependency);
   }
 
   if (destinationIndex === -1) {
     optimalRoute.push(destination);
-  } else if (!!desDependency) {
+  } else if (!!desDependency && desDependencyIndex > destinationIndex) {
     optimalRoute.splice(desDependencyIndex, 1);
     optimalRoute.splice(destinationIndex, 0, desDependency);
   }
