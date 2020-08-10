@@ -1,8 +1,9 @@
 const { describe, it } = require('mocha');
 const { expect } = require('chai');
 
-const generateRoute = require('../holiday-planner/app.js');
-const transformInput = require('../shared/helpers.js');
+const generateRoute = require('../holiday-planner/app');
+const transformInput = require('../shared/helpers');
+const { INPUT_VALIDATION_ERROR } = require('../shared/constants');
 
 describe('transformInput()', () => {
   it('given destination with or without separator, transformInput() should return arrays of the destination', () => {
@@ -21,11 +22,8 @@ describe('transformInput()', () => {
 
   it('given destinations with two destination dependency, transformInput() should throw Error', () => {
     const input = 'x z l';
-    const errorRE = new RegExp(
-      `Invalid input. Please enter two letters, with or without a "fat arrow"`,
-    );
 
-    expect(() => transformInput(input)).to.throw(errorRE);
+    expect(() => transformInput(input)).to.throw(INPUT_VALIDATION_ERROR);
   });
 });
 
@@ -40,46 +38,40 @@ describe('generateRoute()', () => {
     });
   });
 
-  describe('given the most simple destination, generateRoute()', () => {
-    const destionation = ['x => '];
-    const expectation = 'x';
-
-    it('should return the optimised route', () => {
+  describe('given destinations without dependency, generateRoute()', () => {
+    it('should return the destinations in order as the optimised routes v1', () => {
+      const destionation = ['x => ', 'y => '];
+      const expectation = 'xy';
       const result = generateRoute(destionation);
-      expect(result).be.equal(expectation).and.be.lengthOf(1);
+      expect(result).be.equal(expectation).and.be.lengthOf(2);
+    });
+
+    it('should return the destinations in order as the optimised routes v2', () => {
+      const expectation = 'wxyz';
+      const destionations = ['w => ', 'x => ', 'y', 'z'];
+      const result = generateRoute(destionations);
+      expect(result).be.equal(expectation).and.be.lengthOf(4);
     });
   });
 
-  describe('given multiple destinations without dependency, generateRoute()', () => {
-    const destionations = ['x => ', 'y => ', 'z => '];
-    const expectation = 'xyz';
-
-    it('should return the optimised routes', () => {
+  describe('given destinations, each with distinct dependency, generateRoute()', () => {
+    it(`should return the destination dependencys before its dependent as the optimised routes v1`, () => {
+      const expectation = 'xw';
+      const destionations = ['w => x'];
       const result = generateRoute(destionations);
-      expect(result).be.equal(expectation).and.be.lengthOf(3);
+      expect(result).be.equal(expectation).and.be.lengthOf(2);
+    });
+
+    it(`should return the destination dependencys before its dependent as the optimised routes v2`, () => {
+      const expectation = 'xwzy';
+      const destionations = ['w => x', 'y => z'];
+      const result = generateRoute(destionations);
+      expect(result).be.equal(expectation).and.be.lengthOf(4);
     });
   });
 
-  describe('given multiple destinations with dependency, generateRoute()', () => {
-    it('should return the optimised route by moving the destination dependency v1', () => {
-      const expectation = 'yxz';
-      const destionations = ['x => y', 'y => ', 'z => '];
-      const result = generateRoute(destionations);
-
-      expect(result).be.equal(expectation).and.be.lengthOf(3);
-    });
-
-    it('should return the optimised route by moving the destination dependency v2', () => {
-      const expectation = 'vwzxy';
-      const destionations = ['v => ', 'w => ', 'x => z', 'y => ', 'z => '];
-      const result = generateRoute(destionations);
-
-      expect(result).be.equal(expectation).and.be.lengthOf(5);
-    });
-  });
-
-  describe('given multiple destinations with circular dependencies, generateRoute()', () => {
-    it('should return the optimised route by moving the destination dependency v1', () => {
+  describe(`given a destination dependency thats dependent already in the route, generateRoute()`, () => {
+    it('should return the optimised route by removing the just added destination dependency and pusing it before the dependent v1', () => {
       const expectation = 'uzwvxy';
       const destionations = ['u => ', 'v => w', 'w => z', 'x => u', 'y => v', 'z => '];
       const result = generateRoute(destionations);
@@ -87,24 +79,18 @@ describe('generateRoute()', () => {
       expect(result).be.equal(expectation).and.be.lengthOf(6);
     });
 
-    it('should return the optimised route by moving the destination dependency v2', () => {
-      const expectation = 'yzuvwx';
-      const destionations = ['u => z', 'v => ', 'w => y', 'x => u', 'y =>', 'z => y'];
-      const result = generateRoute(destionations);
-
-      expect(result).be.equal(expectation).and.be.lengthOf(6);
-    });
-
-    it('should return the optimised route by moving the destination dependency v3', () => {
+    it('should return the optimised route by removing the just added destination dependency and pusing it before the dependent v2', () => {
       const expectation = 'wyuvxz';
       const destionations = ['u => y', 'v => u', 'w => ', 'x => u', 'y => w', 'z => '];
       const result = generateRoute(destionations);
 
       expect(result).be.equal(expectation).and.be.lengthOf(6);
     });
+  });
 
-    it('should return the optimised route by moving the destination dependency v4', () => {
-      const expectation = 'vxwzy';
+  describe(`given destionations in which both des dep and destination in the route and the des dep on a lower index than its dependent, generateRoute()`, () => {
+    it('should return the optimised route by not removing the destination dependency before the dependent', () => {
+      const expectation = 'vxwzy'; 
       const destionations = ['vw', 'wx', 'xv', 'yz', 'zv'];
       const result = generateRoute(destionations);
 
