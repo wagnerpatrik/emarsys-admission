@@ -2,7 +2,7 @@ const { describe, it } = require('mocha');
 const { expect } = require('chai');
 
 const generateRoute = require('../holiday-planner/app');
-const transformInput = require('../shared/helpers');
+const { transformInput } = require('../shared/helpers');
 const { INPUT_VALIDATION_ERROR } = require('../shared/constants');
 
 describe('transformInput()', () => {
@@ -29,11 +29,18 @@ describe('transformInput()', () => {
 
 describe('generateRoute()', () => {
   describe('given no destination, generateRoute()', () => {
-    const destionation = null;
     const expectation = '';
 
-    it('should return an empty string', () => {
+    it('should return an empty string v1', () => {
+      const destionation = null;
       const result = generateRoute(destionation);
+
+      expect(result).be.equal(expectation).and.be.lengthOf(0);
+    });
+
+    it('should return an empty string v2', () => {
+      const result = generateRoute();
+
       expect(result).be.equal(expectation).and.be.lengthOf(0);
     });
   });
@@ -43,6 +50,7 @@ describe('generateRoute()', () => {
       const destionation = ['x => ', 'y => '];
       const expectation = 'xy';
       const result = generateRoute(destionation);
+
       expect(result).be.equal(expectation).and.be.lengthOf(2);
     });
 
@@ -50,6 +58,7 @@ describe('generateRoute()', () => {
       const expectation = 'wxyz';
       const destionations = ['w => ', 'x => ', 'y', 'z'];
       const result = generateRoute(destionations);
+
       expect(result).be.equal(expectation).and.be.lengthOf(4);
     });
   });
@@ -59,6 +68,7 @@ describe('generateRoute()', () => {
       const expectation = 'xw';
       const destionations = ['w => x'];
       const result = generateRoute(destionations);
+
       expect(result).be.equal(expectation).and.be.lengthOf(2);
     });
 
@@ -66,6 +76,7 @@ describe('generateRoute()', () => {
       const expectation = 'xwzy';
       const destionations = ['w => x', 'y => z'];
       const result = generateRoute(destionations);
+
       expect(result).be.equal(expectation).and.be.lengthOf(4);
     });
   });
@@ -90,7 +101,7 @@ describe('generateRoute()', () => {
 
   describe(`given destionations in which both des dep and destination in the route and the des dep on a lower index than its dependent, generateRoute()`, () => {
     it('should return the optimised route by not removing the destination dependency before the dependent', () => {
-      const expectation = 'vxwzy'; 
+      const expectation = 'vxwzy';
       const destionations = ['vw', 'wx', 'xv', 'yz', 'zv'];
       const result = generateRoute(destionations);
 
